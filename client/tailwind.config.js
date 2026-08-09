@@ -4,14 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: "#12151C",
-        panel: "#1B1F2A",
-        accent: "#5B8DEF",
+        cream: "#F7F3EA",
+        charcoal: "#211E1C",
+        amber: "#F5C33B",
+        lilac: "#C7B8F5",
+        sky: "#A8DDEF",
+        coral: "#FF6B4A",
       },
       fontFamily: {
-        display: ["'Space Grotesk'", "sans-serif"],
+        display: ["'Plus Jakarta Sans'", "sans-serif"],
         body: ["'Inter'", "sans-serif"],
         mono: ["'JetBrains Mono'", "monospace"],
+      },
+      borderRadius: {
+        xl2: "1.75rem",
       },
     },
   },
