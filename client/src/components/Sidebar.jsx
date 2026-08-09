@@ -24,7 +24,7 @@ const Sidebar = () => {
   const { logout } = useAuth();
 
   return (
-    <aside className="w-20 bg-charcoal rounded-l-xl2 flex flex-col items-center py-6 justify-between">
+    <aside className="w-20 min-h-screen bg-charcoal flex flex-col items-center py-6 justify-between">
       <div className="flex flex-col items-center gap-2">
         {navItems.map(({ to, icon: Icon, label }) => (
           <NavLink
