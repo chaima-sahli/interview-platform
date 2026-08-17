@@ -26,7 +26,7 @@ const Login = () => {
     <AuthLayout
       eyebrow="Welcome back"
       headline="Run interviews with clarity and confidence."
-      subtext="Schedule, chat, pair-code, and evaluate candidates — all in one place."
+      subtext="Schedule, chat, pair-code, and evaluate candidates. All in one place."
     >
       <span className="font-display font-extrabold text-xl">
         Interview<span className="text-coral">Hub</span>
