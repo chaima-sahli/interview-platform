@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import interviewRoutes from "./routes/interviewRoutes.js";
+
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 
 
@@ -16,6 +18,7 @@ app.use(express.json());
 
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 app.use("/api/auth", authRoutes);   
+app.use("/api/interviews", interviewRoutes); 
 
 app.use(notFound);                  
 app.use(errorHandler); 
