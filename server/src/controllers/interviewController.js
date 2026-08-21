@@ -6,13 +6,11 @@ export const createInterview = async (req, res, next) => {
   try {
     const { candidateEmail, title, type, scheduledFor, durationMinutes, notes } = req.body;
 
-    const candidate = await User.findOne({ email: candidateEmail }); 
-    if (!candidate || candidate.role !== "candidate") {
-      return res.status(404).json({ message: "No candidate found with that email" });
-    }
+    const existingCandidate = await User.findOne({ email: candidateEmail, role: "candidate" });
 
     const interview = await Interview.create({
-      candidate: candidate._id,
+      candidate: existingCandidate ? existingCandidate._id : null,
+      candidateEmail,
       interviewer: req.user._id,
       title,
       type,
@@ -31,7 +29,6 @@ export const createInterview = async (req, res, next) => {
     next(error);
   }
 };
-
 
 export const getMyInterviews = async (req, res, next) => {
   try {

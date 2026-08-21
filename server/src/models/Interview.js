@@ -5,7 +5,14 @@ const interviewSchema = new mongoose.Schema(
     candidate: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      default: true,
+    },
+
+    candidateEmail: {
+      type: String,
+      required: [true, "Candidate email is required"],
+      lowercase: true,
+      trim: true,
     },
     interviewer: {
       type: mongoose.Schema.Types.ObjectId,
@@ -42,7 +49,7 @@ const interviewSchema = new mongoose.Schema(
       // interviewer's private prep notes before the interview
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Interview = mongoose.model("Interview", interviewSchema);

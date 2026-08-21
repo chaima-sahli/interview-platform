@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
+import Interview from "../models/Interview.js";
 
 //   POST /api/auth/register
 export const register = async (req, res, next) => {
@@ -17,6 +18,14 @@ export const register = async (req, res, next) => {
       password,
       role: role === "interviewer" ? "interviewer" : "candidate",
     });
+
+     // Link any interviews scheduled before this candidate had an account
+    if (user.role === "candidate") {
+      await Interview.updateMany(
+        { candidateEmail: user.email, candidate: null },
+        { candidate: user._id }
+      );
+    }
 
     res.status(201).json({
       _id: user._id,
