@@ -4,12 +4,14 @@ import api from "../api/api";
 import { useAuth } from "../context/AuthContext";
 import InterviewCard from "../components/InterviewCard";
 import NewInterviewForm from "../components/NewInterviewForm";
+import InterviewDetailModal from "../components/InterviewDetailModal";
 
 const Schedule = () => {
   const { user } = useAuth();
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [selectedInterview, setSelectedInterview] = useState(null);
 
   useEffect(() => {
     api
@@ -24,7 +26,9 @@ const Schedule = () => {
         <div>
           <h1 className="font-display font-extrabold text-3xl">Schedule</h1>
           <p className="text-charcoal/50 mt-2">
-            {user.role === "interviewer" ? "Interviews you're running" : "Your upcoming interviews"}
+            {user.role === "interviewer"
+              ? "Interviews you're running"
+              : "Your upcoming interviews"}
           </p>
         </div>
 
@@ -54,10 +58,19 @@ const Schedule = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
           {interviews.map((interview) => (
-            <InterviewCard key={interview._id} interview={interview} />
+            <InterviewCard
+              key={interview._id}
+              interview={interview}
+              onClick={() => setSelectedInterview(interview)}
+            />
           ))}
         </div>
       )}
+
+      <InterviewDetailModal
+        interview={selectedInterview}
+        onClose={() => setSelectedInterview(null)}
+      />
     </div>
   );
 };
