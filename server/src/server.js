@@ -7,6 +7,7 @@ import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import interviewRoutes from "./routes/interviewRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
+import { socketAuth } from "./middleware/socketAuth.js";
 
 dotenv.config();
 connectDB();
@@ -17,6 +18,17 @@ const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: { origin: process.env.CLIENT_URL, credentials: true },
 });
+
+io.use(socketAuth);   
+
+io.on("connection", (socket) => {
+  console.log(`Socket connected: ${socket.user.name} (${socket.user.role})`);
+
+  socket.on("disconnect", () => {
+    console.log(`Socket disconnected: ${socket.user.name}`);
+  });
+});
+
 
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
