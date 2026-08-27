@@ -19,16 +19,7 @@ const io = new Server(httpServer, {
   cors: { origin: process.env.CLIENT_URL, credentials: true },
 });
 
-io.use(socketAuth);   
-
-io.on("connection", (socket) => {
-  console.log(`Socket connected: ${socket.user.name} (${socket.user.role})`);
-
-  socket.on("disconnect", () => {
-    console.log(`Socket disconnected: ${socket.user.name}`);
-  });
-});
-
+io.use(socketAuth);
 
 app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
@@ -41,10 +32,10 @@ app.use(notFound);
 app.use(errorHandler);
 
 io.on("connection", (socket) => {
-  console.log(`Socket connected: ${socket.id}`);
+  console.log(`Socket connected: ${socket.user.name} (${socket.user.role})`);
 
   socket.on("disconnect", () => {
-    console.log(`Socket disconnected: ${socket.id}`);
+    console.log(`Socket disconnected: ${socket.user.name}`);
   });
 });
 
