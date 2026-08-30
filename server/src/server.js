@@ -10,6 +10,7 @@ import chatRoutes from "./routes/chatRoutes.js";
 
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 import { socketAuth } from "./middleware/socketAuth.js";
+import { registerChatHandlers } from "./sockets/chatSocket.js";
 
 dotenv.config();
 connectDB();
@@ -37,6 +38,8 @@ app.use(errorHandler);
 io.on("connection", (socket) => {
   console.log(`Socket connected: ${socket.user.name} (${socket.user.role})`);
 
+  registerChatHandlers(io, socket);
+  
   socket.on("disconnect", () => {
     console.log(`Socket disconnected: ${socket.user.name}`);
   });
