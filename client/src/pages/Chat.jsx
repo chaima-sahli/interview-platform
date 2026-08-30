@@ -65,37 +65,58 @@ const Chat = () => {
   };
 
   if (error) {
-    return <p className="text-coral">{error}</p>;
+    return <p className='text-coral'>{error}</p>;
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)]">
-      <div className="flex items-center gap-3 pb-4 border-b border-charcoal/10">
-        <button onClick={() => navigate("/chat")} className="text-charcoal/50 hover:text-charcoal">
+    <div className='flex flex-col h-[calc(100vh-4rem)]'>
+      <div className='flex items-center gap-3 pb-4 border-b border-charcoal/10'>
+        <button
+          onClick={() => navigate("/chat")}
+          className='text-charcoal/50 hover:text-charcoal'
+        >
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h2 className="font-display font-bold text-lg">Conversation</h2>
-          <p className="text-xs text-charcoal/40">
+          <h2 className='font-display font-bold text-lg'>Conversation</h2>
+          <p className='text-xs text-charcoal/40'>
             {isConnected ? "Connected" : "Connecting…"}
           </p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto py-4 space-y-3">
+      <div className='flex-1 overflow-y-auto py-4 space-y-3'>
         {messages.map((msg) => {
           const isMine = msg.sender._id === user._id;
+          const timeLabel = new Date(msg.createdAt).toLocaleTimeString(
+            undefined,
+            {
+              hour: "numeric",
+              minute: "2-digit",
+            },
+          );
+
           return (
-            <div key={msg._id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+            <div
+              key={msg._id}
+              className={`flex ${isMine ? "justify-end" : "justify-start"}`}
+            >
               <div
                 className={`max-w-xs rounded-2xl px-4 py-2.5 text-sm ${
                   isMine ? "bg-coral text-white" : "bg-white text-charcoal"
                 }`}
               >
                 {!isMine && (
-                  <p className="text-xs font-semibold mb-0.5 opacity-70">{msg.sender.name}</p>
+                  <p className='text-xs font-semibold mb-0.5 opacity-70'>
+                    {msg.sender.name}
+                  </p>
                 )}
                 <p>{msg.text}</p>
+                <p
+                  className={`text-[10px] mt-1 text-right ${isMine ? "text-white/60" : "text-charcoal/40"}`}
+                >
+                  {timeLabel}
+                </p>
               </div>
             </div>
           );
@@ -103,18 +124,21 @@ const Chat = () => {
         <div ref={bottomRef} />
       </div>
 
-      <form onSubmit={handleSend} className="flex items-center gap-2 pt-4 border-t border-charcoal/10">
+      <form
+        onSubmit={handleSend}
+        className='flex items-center gap-2 pt-4 border-t border-charcoal/10'
+      >
         <input
-          type="text"
+          type='text'
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Type a message…"
-          className="flex-1 bg-white border border-charcoal/10 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-coral"
+          placeholder='Type a message…'
+          className='flex-1 bg-white border border-charcoal/10 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-coral'
         />
         <button
-          type="submit"
+          type='submit'
           disabled={!isConnected}
-          className="bg-coral hover:opacity-90 disabled:opacity-50 transition text-white rounded-full p-2.5"
+          className='bg-coral hover:opacity-90 disabled:opacity-50 transition text-white rounded-full p-2.5'
         >
           <Send size={18} />
         </button>
