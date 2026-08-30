@@ -62,3 +62,37 @@ export const getMessages = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getMyConversations = async (req, res, next) => {
+  try {
+    const conversations = await Conversation.find({ participants: req.user._id })
+      .populate("interview", "title type")
+      .populate("participants", "name email")
+      .sort({ lastMessageAt: -1 });
+
+    const withUnreadCounts = await Promise.all(
+      conversations.map(async (conv) => {
+        const unreadCount = await Message.countDocuments({
+          conversation: conv._id,
+          readBy: { $ne: req.user._id },
+        });
+
+        const otherParticipant = conv.participants.find(
+          (p) => !p._id.equals(req.user._id)
+        );
+
+        return {
+          _id: conv._id,
+          interview: conv.interview,
+          otherParticipant,
+          lastMessageAt: conv.lastMessageAt,
+          unreadCount,
+        };
+      })
+    );
+
+    res.json(withUnreadCounts);
+  } catch (error) {
+    next(error);
+  }
+};
