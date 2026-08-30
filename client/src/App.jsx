@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Schedule from "./pages/Schedule";
+import ChatList from "./pages/ChatList";
+import Chat from "./pages/Chat";
 
 function App() {
   return (
@@ -27,6 +29,26 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <Schedule />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/chat'
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <ChatList />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/chat/:interviewId'
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Chat />
             </Layout>
           </ProtectedRoute>
         }
