@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { useSocket } from "../hooks/useSocket";
 
 const Chat = () => {
-  const { interviewId } = useParams();
+  const { userId  } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { socket, isConnected } = useSocket();
@@ -17,12 +17,11 @@ const Chat = () => {
   const [error, setError] = useState(null);
   const bottomRef = useRef(null);
 
-  // Load (or create) the conversation, then its message history
   useEffect(() => {
     let active = true;
 
     api
-      .get(`/chat/interviews/${interviewId}/conversation`)
+      .get(`/chat/with/${userId}`)
       .then((conv) => {
         if (!active) return;
         setConversation(conv);
@@ -36,7 +35,7 @@ const Chat = () => {
     return () => {
       active = false;
     };
-  }, [interviewId]);
+  }, [userId]);
 
   // Join the socket room once we know the conversation and the socket is ready
   useEffect(() => {
