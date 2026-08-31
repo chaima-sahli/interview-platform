@@ -3,48 +3,112 @@ import { useNavigate } from "react-router-dom";
 import { MessageSquare } from "lucide-react";
 import api from "../api/api";
 import { useAuth } from "../context/AuthContext";
+import { useSocket } from "../hooks/useSocket";
 import { interviewTypeStyles } from "../utils/interviewTypeStyles";
 
 const ChatList = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [interviews, setInterviews] = useState([]);
+  const { socket } = useSocket();
+  const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    api
-      .get("/interviews")
-      .then((data) => setInterviews(data.filter((i) => i.candidate))) // hide pending invites
+  const loadChats = () => {
+    Promise.all([api.get("/interviews"), api.get("/chat/conversations")])
+      .then(([interviews, conversations]) => {
+        console.log("interviews:", interviews); // add this
+        console.log("conversations:", conversations);
+        // Only interviews with a registered candidate can chat
+        const eligible = interviews.filter((i) => i.candidate);
+        console.log("eligible (has candidate):", eligible); // add this
+
+        // Index existing conversations by interview id for quick lookup
+        const byInterviewId = new Map(
+          conversations.map((c) => [c.interview?._id, c]),
+        );
+
+        const merged = eligible.map((interview) => {
+          const conv = byInterviewId.get(interview._id);
+          const otherParty =
+            user.role === "interviewer"
+              ? interview.candidate
+              : interview.interviewer;
+
+          return {
+            interviewId: interview._id,
+            title: interview.title,
+            type: interview.type,
+            otherPartyName: otherParty?.name,
+            unreadCount: conv?.unreadCount || 0,
+            lastMessageAt: conv?.lastMessageAt || interview.createdAt,
+          };
+        });
+
+        merged.sort(
+          (a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt),
+        );
+        setRows(merged);
+      })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadChats();
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("newMessage", loadChats);
+    socket.on("conversationRead", loadChats);
+    return () => {
+      socket.off("newMessage", loadChats);
+      socket.off("conversationRead", loadChats);
+    };
+  }, [socket]);
 
   return (
     <div>
-      <h1 className="font-display font-extrabold text-3xl">Chat</h1>
-      <p className="text-charcoal/50 mt-2">Pick an interview to open its conversation.</p>
+      <h1 className='font-display font-extrabold text-3xl'>Chat</h1>
+      <p className='text-charcoal/50 mt-2'>Pick a conversation to open it.</p>
 
       {loading ? (
-        <p className="text-charcoal/50 mt-8">Loading…</p>
-      ) : interviews.length === 0 ? (
-        <p className="text-charcoal/50 mt-8">No conversations available yet.</p>
+        <p className='text-charcoal/50 mt-8'>Loading…</p>
+      ) : rows.length === 0 ? (
+        <p className='text-charcoal/50 mt-8'>
+          No conversations yet — chat becomes available once an interview has a
+          registered candidate.
+        </p>
       ) : (
-        <div className="mt-8 space-y-2">
-          {interviews.map((interview) => {
-            const style = interviewTypeStyles[interview.type] || interviewTypeStyles.technical;
-            const otherParty = user.role === "interviewer" ? interview.candidate : interview.interviewer;
+        <div className='mt-8 space-y-2'>
+          {rows.map((row) => {
+            const style =
+              interviewTypeStyles[row.type] || interviewTypeStyles.technical;
 
             return (
               <button
-                key={interview._id}
-                onClick={() => navigate(`/chat/${interview._id}`)}
-                className="w-full flex items-center gap-4 bg-white hover:bg-cream/60 transition rounded-2xl p-4 text-left"
+                key={row.interviewId}
+                onClick={() => navigate(`/chat/${row.interviewId}`)}
+                className='w-full flex items-center gap-4 bg-white hover:bg-cream/60 transition rounded-2xl p-4 text-left'
               >
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${style.badge}`}>
-                  <MessageSquare size={18} className="text-charcoal" />
+                <div
+                  className={`relative w-10 h-10 rounded-full flex items-center justify-center ${style.badge}`}
+                >
+                  <MessageSquare size={18} className='text-charcoal' />
+                  {row.unreadCount > 0 && (
+                    <span className='absolute -top-1 -right-1 bg-coral text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center'>
+                      {row.unreadCount > 9 ? "9+" : row.unreadCount}
+                    </span>
+                  )}
                 </div>
-                <div>
-                  <p className="font-semibold">{interview.title}</p>
-                  <p className="text-sm text-charcoal/50">with {otherParty?.name}</p>
+                <div className='flex-1'>
+                  <p
+                    className={
+                      row.unreadCount > 0 ? "font-bold" : "font-semibold"
+                    }
+                  >
+                    {row.otherPartyName}
+                  </p>
+                  <p className='text-sm text-charcoal/50'>{row.title}</p>
                 </div>
               </button>
             );

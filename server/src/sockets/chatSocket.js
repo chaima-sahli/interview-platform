@@ -1,33 +1,19 @@
 import Message from "../models/Message.js";
 import Conversation from "../models/Conversation.js";
 
-/**
- * Registers all chat-related event listeners on a single connected socket.
- * Called once per connection from server.js.
- */
+const isParticipant = (conversation, userId) =>
+  conversation.interviewer.toString() === userId || conversation.candidate.toString() === userId;
+
 export const registerChatHandlers = (io, socket) => {
   socket.on("joinConversation", async (conversationId) => {
     const conversation = await Conversation.findById(conversationId);
-    if (!conversation) return;
-
-    const isParticipant = conversation.participants.some(
-      (p) => p.toString() === socket.user.id
-    );
-    if (!isParticipant) return;
-
+    if (!conversation || !isParticipant(conversation, socket.user.id)) return;
     socket.join(conversationId);
   });
 
-  // Mark every message in this conversation as read by the current user,
-  // then let the room know (so unread badges can clear in real time).
   socket.on("markAsRead", async (conversationId) => {
     const conversation = await Conversation.findById(conversationId);
-    if (!conversation) return;
-
-    const isParticipant = conversation.participants.some(
-      (p) => p.toString() === socket.user.id
-    );
-    if (!isParticipant) return;
+    if (!conversation || !isParticipant(conversation, socket.user.id)) return;
 
     await Message.updateMany(
       { conversation: conversationId, readBy: { $ne: socket.user.id } },
@@ -44,12 +30,7 @@ export const registerChatHandlers = (io, socket) => {
     if (!text?.trim()) return;
 
     const conversation = await Conversation.findById(conversationId);
-    if (!conversation) return;
-
-    const isParticipant = conversation.participants.some(
-      (p) => p.toString() === socket.user.id
-    );
-    if (!isParticipant) return;
+    if (!conversation || !isParticipant(conversation, socket.user.id)) return;
 
     const message = await Message.create({
       conversation: conversationId,

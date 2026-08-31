@@ -2,19 +2,16 @@ import mongoose from "mongoose";
 
 const conversationSchema = new mongoose.Schema(
   {
-    interview: {
+    interviewer: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Interview",
+      ref: "User",
       required: true,
-      unique: true, 
     },
-    participants: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-      },
-    ],
+    candidate: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     lastMessageAt: {
       type: Date,
       default: Date.now,
@@ -22,6 +19,9 @@ const conversationSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+
+conversationSchema.index({ interviewer: 1, candidate: 1 }, { unique: true });
 
 const Conversation = mongoose.model("Conversation", conversationSchema);
 
