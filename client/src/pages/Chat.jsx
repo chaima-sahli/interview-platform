@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { useSocket } from "../hooks/useSocket";
 
 const Chat = () => {
-  const { userId  } = useParams();
+  const { userId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { socket, isConnected } = useSocket();
@@ -45,11 +45,17 @@ const Chat = () => {
 
   // Listen for incoming messages
   useEffect(() => {
-    if (!socket) return;
-    const handleNewMessage = (msg) => setMessages((prev) => [...prev, msg]);
+    if (!socket || !conversation) return;
+    const handleNewMessage = (msg) => {
+      setMessages((prev) => [...prev, msg]);
+      // You're actively viewing this conversation, so immediately mark
+      // this new message (and anything else pending) as read too.
+      socket.emit("markAsRead", conversation._id);
+    };
+
     socket.on("newMessage", handleNewMessage);
     return () => socket.off("newMessage", handleNewMessage);
-  }, [socket]);
+  }, [socket, conversation]);
 
   // Auto-scroll to the latest message
   useEffect(() => {

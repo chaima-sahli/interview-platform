@@ -15,6 +15,7 @@ const ChatList = () => {
   const loadChats = () => {
     Promise.all([api.get("/interviews"), api.get("/chat/conversations")])
       .then(([interviews, conversations]) => {
+        console.log("RAW conversations from API:", conversations);
         // Build one row per unique person you've interviewed/been interviewed by
         const peopleById = new Map();
 
