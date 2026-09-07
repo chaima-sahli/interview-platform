@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Schedule from "./pages/Schedule";
 import ChatList from "./pages/ChatList";
 import Chat from "./pages/Chat";
+import VideoCall from "./pages/VideoCall";
 
 function App() {
   return (
@@ -49,6 +50,17 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <Chat />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/call/:interviewId'
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <VideoCall />
             </Layout>
           </ProtectedRoute>
         }
