@@ -1,13 +1,17 @@
-import { X, Clock, Mail, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { X, Clock, Mail, FileText, Video } from "lucide-react";
 import { interviewTypeStyles } from "../utils/interviewTypeStyles";
+import { getCallAvailability } from "../utils/callAvailability";
 import { useAuth } from "../context/AuthContext";
 
 const InterviewDetailModal = ({ interview, onClose }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   if (!interview) return null;
 
   const style = interviewTypeStyles[interview.type] || interviewTypeStyles.technical;
   const isPending = user.role === "interviewer" && !interview.candidate;
+  const availability = getCallAvailability(interview);
 
   const dateLabel = new Date(interview.scheduledFor).toLocaleString(undefined, {
     weekday: "long",
@@ -18,14 +22,8 @@ const InterviewDetailModal = ({ interview, onClose }) => {
   });
 
   return (
-    <div
-      className="fixed inset-0 bg-charcoal/40 flex items-center justify-center px-4 z-50"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-2xl p-6 w-full max-w-md"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 bg-charcoal/40 flex items-center justify-center px-4 z-50" onClick={onClose}>
+      <div className="bg-white rounded-2xl p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start justify-between">
           <span className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${style.badge} text-charcoal`}>
             {style.label}
@@ -48,9 +46,7 @@ const InterviewDetailModal = ({ interview, onClose }) => {
             {isPending ? (
               <span>{interview.candidateEmail} <span className="text-coral font-medium">(pending signup)</span></span>
             ) : (
-              <span>
-                Candidate: {interview.candidate?.name} ({interview.candidate?.email})
-              </span>
+              <span>Candidate: {interview.candidate?.name} ({interview.candidate?.email})</span>
             )}
           </div>
 
@@ -69,6 +65,22 @@ const InterviewDetailModal = ({ interview, onClose }) => {
         <span className="inline-block mt-5 text-xs font-medium text-charcoal/50 bg-cream rounded-full px-3 py-1 capitalize">
           {interview.status}
         </span>
+
+        {!isPending && (
+          <div className="mt-5 pt-5 border-t border-charcoal/10">
+            <button
+              onClick={() => navigate(`/call/${interview._id}`)}
+              disabled={!availability.canJoin}
+              className="w-full flex items-center justify-center gap-2 bg-coral hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition text-white rounded-full py-3 text-sm font-semibold"
+            >
+              <Video size={16} />
+              {availability.canJoin ? "Join the call" : availability.label}
+            </button>
+            {availability.canJoin && (
+              <p className="text-xs text-charcoal/40 text-center mt-2">{availability.label}</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
