@@ -8,6 +8,8 @@ import Schedule from "./pages/Schedule";
 import ChatList from "./pages/ChatList";
 import Chat from "./pages/Chat";
 import VideoCall from "./pages/VideoCall";
+import CodeList from "./pages/CodeList";
+import CodeSession from "./pages/CodeSession";
 
 function App() {
   return (
@@ -61,6 +63,27 @@ function App() {
           <ProtectedRoute>
             <Layout>
               <VideoCall />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path='/code'
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <CodeList />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/code/:interviewId'
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <CodeSession />
             </Layout>
           </ProtectedRoute>
         }
