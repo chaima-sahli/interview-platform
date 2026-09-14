@@ -112,13 +112,13 @@ const VideoCall = () => {
   };
 
   const endCall = () => {
-    navigate("/interviews");
+    navigate("/schedule");
   };
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
       <div className="flex items-center gap-3 pb-4 border-b border-charcoal/10">
-        <button onClick={() => navigate("/interviews")} className="text-charcoal/50 hover:text-charcoal">
+        <button onClick={() => navigate("/schedule")} className="text-charcoal/50 hover:text-charcoal">
           <ArrowLeft size={20} />
         </button>
         <div>

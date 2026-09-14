@@ -3,7 +3,6 @@ import {
   LayoutDashboard,
   CalendarClock,
   MessageSquare,
-  Video,
   Code2,
   ClipboardList,
   Settings,
@@ -15,7 +14,6 @@ const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/schedule", icon: CalendarClock, label: "Schedule" },
   { to: "/chat", icon: MessageSquare, label: "Chat" },
-  { to: "/interviews", icon: Video, label: "Interviews" },
   { to: "/code", icon: Code2, label: "Code Editor" },
   { to: "/evaluations", icon: ClipboardList, label: "Evaluations" },
 ];
