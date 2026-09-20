@@ -12,6 +12,7 @@ import { errorHandler, notFound } from "./middleware/errorHandler.js";
 import { socketAuth } from "./middleware/socketAuth.js";
 import { registerChatHandlers } from "./sockets/chatSocket.js";
 import { registerCallHandlers } from "./sockets/callSocket.js";
+import { registerCodeHandlers } from "./sockets/codeSocket.js";
 
 dotenv.config();
 connectDB();
@@ -41,6 +42,7 @@ io.on("connection", (socket) => {
 
   registerChatHandlers(io, socket);
   registerCallHandlers(io, socket);
+  registerCodeHandlers(io, socket);
   
   socket.on("disconnect", () => {
     console.log(`Socket disconnected: ${socket.user.name}`);
