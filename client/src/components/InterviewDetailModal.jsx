@@ -69,7 +69,7 @@ const InterviewDetailModal = ({ interview, onClose }) => {
         {!isPending && (
           <div className="mt-5 pt-5 border-t border-charcoal/10">
             <button
-              onClick={() => navigate(`/call/${interview._id}`)}
+              onClick={() => navigate(`/session/${interview._id}`)}
               disabled={!availability.canJoin}
               className="w-full flex items-center justify-center gap-2 bg-coral hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition text-white rounded-full py-3 text-sm font-semibold"
             >

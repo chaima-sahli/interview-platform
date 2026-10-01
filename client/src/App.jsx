@@ -7,9 +7,8 @@ import Dashboard from "./pages/Dashboard";
 import Schedule from "./pages/Schedule";
 import ChatList from "./pages/ChatList";
 import Chat from "./pages/Chat";
-import VideoCall from "./pages/VideoCall";
 import CodeList from "./pages/CodeList";
-import CodeSession from "./pages/CodeSession";
+import InterviewSession from "./pages/InterviewSession";
 
 function App() {
   return (
@@ -56,13 +55,12 @@ function App() {
           </ProtectedRoute>
         }
       />
-
       <Route
-        path='/call/:interviewId'
+        path='/session/:interviewId'
         element={
           <ProtectedRoute>
             <Layout>
-              <VideoCall />
+              <InterviewSession />
             </Layout>
           </ProtectedRoute>
         }
@@ -78,16 +76,7 @@ function App() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path='/code/:interviewId'
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <CodeSession />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
+     
     </Routes>
   );
 }

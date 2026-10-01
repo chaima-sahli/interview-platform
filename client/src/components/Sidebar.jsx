@@ -14,7 +14,7 @@ const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/schedule", icon: CalendarClock, label: "Schedule" },
   { to: "/chat", icon: MessageSquare, label: "Chat" },
-  { to: "/code", icon: Code2, label: "Code Editor" },
+  { to: "/code", icon: Code2, label: "Interview Session" },
   { to: "/evaluations", icon: ClipboardList, label: "Evaluations" },
 ];
 

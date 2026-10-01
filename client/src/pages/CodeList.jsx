@@ -36,7 +36,7 @@ const CodeList = () => {
             return (
               <button
                 key={interview._id}
-                onClick={() => navigate(`/code/${interview._id}`)}
+                onClick={() => navigate(`/session/${interview._id}`)}
                 className="w-full flex items-center gap-4 bg-white hover:bg-cream/60 transition rounded-2xl p-4 text-left"
               >
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${style.badge}`}>
