@@ -7,6 +7,7 @@ import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import interviewRoutes from "./routes/interviewRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
+import evaluationRoutes from "./routes/evaluationRoutes.js";
 
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 import { socketAuth } from "./middleware/socketAuth.js";
@@ -33,6 +34,7 @@ app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 app.use("/api/auth", authRoutes);
 app.use("/api/interviews", interviewRoutes);
 app.use("/api/chat", chatRoutes); 
+app.use("/api/evaluations", evaluationRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
