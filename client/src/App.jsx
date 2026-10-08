@@ -9,6 +9,8 @@ import ChatList from "./pages/ChatList";
 import Chat from "./pages/Chat";
 import CodeList from "./pages/CodeList";
 import InterviewSession from "./pages/InterviewSession";
+import Evaluations from "./pages/Evaluations";
+import EvaluationForm from "./pages/EvaluationForm";
 
 function App() {
   return (
@@ -76,7 +78,26 @@ function App() {
           </ProtectedRoute>
         }
       />
-     
+      <Route
+        path='/evaluations'
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Evaluations />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='/evaluations/:interviewId'
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <EvaluationForm />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

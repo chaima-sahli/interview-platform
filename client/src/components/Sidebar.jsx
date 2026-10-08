@@ -15,16 +15,24 @@ const navItems = [
   { to: "/schedule", icon: CalendarClock, label: "Schedule" },
   { to: "/chat", icon: MessageSquare, label: "Chat" },
   { to: "/code", icon: Code2, label: "Interview Session" },
-  { to: "/evaluations", icon: ClipboardList, label: "Evaluations" },
+  {
+    to: "/evaluations",
+    icon: ClipboardList,
+    label: "Evaluations",
+    interviewOnly: true,
+  },
 ];
 
 const Sidebar = () => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+  const visibleItems = navItems.filter(
+    (item) => !item.interviewerOnly || user.role === "interviewer",
+  );
 
   return (
-    <aside className="w-20 min-h-screen bg-charcoal flex flex-col items-center py-6 justify-between">
-      <div className="flex flex-col items-center gap-2">
-        {navItems.map(({ to, icon: Icon, label }) => (
+    <aside className='w-20 min-h-screen bg-charcoal flex flex-col items-center py-6 justify-between'>
+      <div className='flex flex-col items-center gap-2'>
+        {visibleItems.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
             to={to}
@@ -42,17 +50,17 @@ const Sidebar = () => {
         ))}
       </div>
 
-      <div className="flex flex-col items-center gap-2">
+      <div className='flex flex-col items-center gap-2'>
         <button
-          title="Settings"
-          className="w-11 h-11 rounded-xl flex items-center justify-center text-cream/50 hover:text-cream hover:bg-white/5 transition"
+          title='Settings'
+          className='w-11 h-11 rounded-xl flex items-center justify-center text-cream/50 hover:text-cream hover:bg-white/5 transition'
         >
           <Settings size={20} />
         </button>
         <button
-          title="Log out"
+          title='Log out'
           onClick={logout}
-          className="w-11 h-11 rounded-xl flex items-center justify-center text-cream/50 hover:text-coral hover:bg-white/5 transition"
+          className='w-11 h-11 rounded-xl flex items-center justify-center text-cream/50 hover:text-coral hover:bg-white/5 transition'
         >
           <LogOut size={20} />
         </button>
